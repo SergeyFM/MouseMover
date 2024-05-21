@@ -6,15 +6,15 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "ConsoleAppLearning/1.0.0": {
+      "notepad/1.0.0": {
         "runtime": {
-          "ConsoleAppLearning.dll": {}
+          "notepad.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "ConsoleAppLearning/1.0.0": {
+    "notepad/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

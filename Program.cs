@@ -55,7 +55,7 @@ class Program {
         bool trackInactivity = settings.ContainsKey("TrackInactivity") && bool.Parse(settings["TrackInactivity"]);
         int inactivityTimeout = settings.ContainsKey("InactivityTimeout") ? int.Parse(settings["InactivityTimeout"]) : 5;
 
-        Console.WriteLine("Randomer started. Press Ctrl+C to stop.");
+        Console.WriteLine("Mover started. Press Ctrl+C to stop.");
         Console.WriteLine($"MoveMouse: {moveMouse}, PressKeys: {pressKeys}, TrackInactivity: {trackInactivity}, InactivityTimeout: {inactivityTimeout} minutes");
 
         Random random = new();
