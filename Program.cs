@@ -95,8 +95,10 @@ class Program {
                 if (pressKeys) {
                     SimulateKeyPress();
                 }
+                Console.WriteLine();
 
-                await Task.Delay(5000, cancellationToken);
+                int delay = random.Next(3000, 30000);
+                await Task.Delay(delay, cancellationToken);
             }
         }, cancellationToken);
 
@@ -119,13 +121,13 @@ class Program {
     // Move the mouse to a random position
     public static void MoveMouse(Random random) {
         if (GetCursorPos(out POINT currentPos)) {
-            int newX = currentPos.X + random.Next(-100, 100);
-            int newY = currentPos.Y + random.Next(-100, 100);
+            int newX = currentPos.X + random.Next(-10, 10);
+            int newY = currentPos.Y + random.Next(-10, 10);
 
             isSimulatingActivity = true;
             SetCursorPos(newX, newY);
             lastSimulatedMousePosition = new POINT { X = newX, Y = newY };
-            Console.WriteLine($"> {newX}, {newY}");
+            Console.Write($" ~({newX}:{newY})> ");
             isSimulatingActivity = false;
         }
     }
@@ -135,7 +137,7 @@ class Program {
         isSimulatingActivity = true;
         keybd_event(VK_CONTROL, 0, 0, nuint.Zero);
         keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, nuint.Zero);
-        Console.WriteLine("+");
+        Console.Write(" [+] ");
         isSimulatingActivity = false;
     }
 

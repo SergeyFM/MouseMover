@@ -8,6 +8,7 @@ This is a simple C# console application that randomly moves the mouse pointer an
 - **Random Mouse Movement**: Moves the mouse pointer to a random position every 5-10 seconds.
 - **Simulated Key Presses**: Simulates a key press every 30 seconds to prevent the system from logging out.
 - **Configurable via `settings.ini`**: Enable or disable mouse movement and key presses through configuration.
+- **User Activity Detection**: The application will start working only when user inactivity is detected for a configurable timeout period.
 
 ## Requirements
 
@@ -27,6 +28,8 @@ This is a simple C# console application that randomly moves the mouse pointer an
     ```ini
     MoveMouse=true
     PressKeys=true
+    TrackInactivity=true
+    InactivityTimeout=5
     ```
 
 2. Run the application from the command line:
@@ -43,12 +46,16 @@ The application reads the following settings from the `settings.ini` file:
 
 - `MoveMouse`: Set to `true` to enable random mouse movements. Set to `false` to disable.
 - `PressKeys`: Set to `true` to enable simulated key presses. Set to `false` to disable.
+- `TrackInactivity`: Set to `true` to enable user inactivity tracking. The application will start working only when user inactivity is detected.
+- `InactivityTimeout`: Set the timeout in minutes after which the application will decide that the user is inactive.
 
 ## Example `settings.ini`
 
 ```ini
 MoveMouse=true
 PressKeys=true
+TrackInactivity=true
+InactivityTimeout=5
 ```
 
 ## Compiled Distributive
@@ -65,7 +72,7 @@ This project is licensed under the MIT License.
 
 ## Acknowledgements
 
-This application uses the Windows API for cursor position and key event simulation. 
+This application uses the Windows API for cursor position and key event simulation.
 
 ## Contributing
 
