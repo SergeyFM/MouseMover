@@ -43,6 +43,9 @@ namespace ConsoleAppLearning
         // Flag to indicate if the app is simulating activity
         private static bool isSimulatingActivity = false;
 
+        // Last known position for simulated activity
+        private static POINT lastSimulatedMousePosition;
+
         // Main method to run the application
         public static async Task Main(string[] args)
         {
@@ -123,6 +126,7 @@ namespace ConsoleAppLearning
 
                 isSimulatingActivity = true;
                 SetCursorPos(newX, newY);
+                lastSimulatedMousePosition = new POINT { X = newX, Y = newY };
                 Console.WriteLine($"> {newX}, {newY}");
                 isSimulatingActivity = false;
             }
@@ -168,11 +172,17 @@ namespace ConsoleAppLearning
                 }
             }
 
-            // Check if the mouse position has changed
+            // Check if the mouse position has changed due to user activity
             if (GetCursorPos(out POINT currentPos))
             {
                 if (currentPos.X != lastMousePosition.X || currentPos.Y != lastMousePosition.Y)
                 {
+                    // Ignore if the change is due to simulated activity
+                    if (currentPos.X == lastSimulatedMousePosition.X && currentPos.Y == lastSimulatedMousePosition.Y)
+                    {
+                        return false;
+                    }
+
                     lastMousePosition = currentPos;
                     return true;
                 }
