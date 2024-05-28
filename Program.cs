@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConsoleAppLearning;
+namespace notepad;
 
 class Program {
     // Import the necessary user32.dll functions
@@ -67,9 +67,7 @@ class Program {
 
         Task monitorTask = Task.CompletedTask;
 
-        if (trackInactivity) {
-            monitorTask = MonitorUserActivityAsync(cancellationToken, lastActivity);
-        }
+        if (trackInactivity) monitorTask = MonitorUserActivityAsync(cancellationToken, lastActivity);
 
         Task activityTask = Task.Run(async () => {
             while (!cancellationToken.IsCancellationRequested) {
@@ -89,12 +87,8 @@ class Program {
                     isActive = true;
                 }
 
-                if (moveMouse) {
-                    MoveMouse(random);
-                }
-                if (pressKeys) {
-                    SimulateKeyPress();
-                }
+                if (moveMouse) MoveMouse(random);
+                if (pressKeys) SimulateKeyPress();
                 Console.WriteLine();
 
                 int delay = random.Next(3000, 30000);
@@ -111,9 +105,7 @@ class Program {
         GetCursorPos(out lastMousePosition);
 
         while (!cancellationToken.IsCancellationRequested) {
-            if (UserIsActive(ref lastMousePosition)) {
-                lastActivity.LastUserActivity = DateTime.Now;
-            }
+            if (UserIsActive(ref lastMousePosition)) lastActivity.LastUserActivity = DateTime.Now;
             await Task.Delay(1000, cancellationToken);
         }
     }
@@ -121,13 +113,18 @@ class Program {
     // Move the mouse to a random position
     public static void MoveMouse(Random random) {
         if (GetCursorPos(out POINT currentPos)) {
-            int newX = currentPos.X + random.Next(-10, 10);
-            int newY = currentPos.Y + random.Next(-10, 10);
+            int leftLimit = currentPos.X < 15 ? 10 : -15;
+            int upLimit = currentPos.Y < 15 ? 10 : -15;
+            int newRandomX = random.Next(leftLimit, leftLimit + 20);
+            int newRandomY = random.Next(upLimit, upLimit + 20);
+
+            int newX = currentPos.X + newRandomX;
+            int newY = currentPos.Y + newRandomY;
 
             isSimulatingActivity = true;
             SetCursorPos(newX, newY);
             lastSimulatedMousePosition = new POINT { X = newX, Y = newY };
-            Console.Write($" ~({newX}:{newY})> ");
+            Console.Write($" ~({newX}:{newY}):> ");
             isSimulatingActivity = false;
         }
     }
@@ -137,7 +134,10 @@ class Program {
         isSimulatingActivity = true;
         keybd_event(VK_CONTROL, 0, 0, nuint.Zero);
         keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, nuint.Zero);
-        Console.Write(" [+] ");
+        string space = new('\t', new Random().Next(0, 12));
+        //string space = new('\t', 12);
+        
+        Console.Write(space + " [+] ");
         isSimulatingActivity = false;
     }
 
@@ -146,9 +146,7 @@ class Program {
         Dictionary<string, string> settings = new();
         foreach (string line in File.ReadAllLines(filePath)) {
             string[] parts = line.Split('=');
-            if (parts.Length == 2) {
-                settings[parts[0].Trim()] = parts[1].Trim();
-            }
+            if (parts.Length == 2) settings[parts[0].Trim()] = parts[1].Trim();
         }
         return settings;
     }
@@ -161,23 +159,17 @@ class Program {
         for (int i = 0; i < 256; i++) {
             short keyState = GetAsyncKeyState(i);
             if ((keyState & 0x8000) != 0) // Most significant bit indicates the key is down
-            {
                 return true;
-            }
         }
 
         // Check if the mouse position has changed due to user activity
-        if (GetCursorPos(out POINT currentPos)) {
-            if (currentPos.X != lastMousePosition.X || currentPos.Y != lastMousePosition.Y) {
+        if (GetCursorPos(out POINT currentPos)) if (currentPos.X != lastMousePosition.X || currentPos.Y != lastMousePosition.Y) {
                 // Ignore if the change is due to simulated activity
-                if (currentPos.X == lastSimulatedMousePosition.X && currentPos.Y == lastSimulatedMousePosition.Y) {
-                    return false;
-                }
+                if (currentPos.X == lastSimulatedMousePosition.X && currentPos.Y == lastSimulatedMousePosition.Y) return false;
 
                 lastMousePosition = currentPos;
                 return true;
             }
-        }
 
         return false;
     }
